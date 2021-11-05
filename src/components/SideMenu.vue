@@ -44,7 +44,7 @@
                     </span>
                 </div>
                 <div class="legend__chart">
-                    <!-- chart -->
+                    <Doughnut ref="chart"/>
                 </div>
             </div>
             <div
@@ -68,6 +68,7 @@
 import LegendItem from "./SideMenu/LegendItem.vue";
 import PersonCard from "./SideMenu/PersonCard.vue";
 import legend from "@/assets/data/legend.json";
+import { Doughnut } from "vue-chartjs";
 
 export default {
     props: {
@@ -83,6 +84,7 @@ export default {
     components: {
         LegendItem,
         PersonCard,
+        Doughnut,
     },
     data() {
         return {
@@ -92,14 +94,39 @@ export default {
     created() {
         this.loadLegend();
     },
-    methods: {
-        loadLegend() {
-            this.legend = legend;
-        },
-        closeProfile() {
-            this.$emit("update:isUserOpenned", false);
-        },
+    mounted() {
+      this.makeChart();
     },
+    methods: {
+          loadLegend() {
+              this.legend = legend;
+          },
+          closeProfile() {
+              this.$emit("update:isUserOpenned", false);
+          },
+          makeChart(){
+            const charData = {
+              labels: this.legend.map((legendItem) => legendItem.text),
+              datasets: [
+                {
+                  label: 'Легенда',
+                  backgroundColor: this.legend.map(
+                    (legendItem) => legendItem.color
+                  ),
+                  data: this.legend.map(
+                    (legendItem) => legendItem.counter
+                  ),
+                }
+              ]
+            };
+            const options = {
+                legend: {
+                  display: false,
+                }
+            };
+            this.$refs.chart.renderChart(charData, options);
+          }
+      },
 };
 </script>
 
