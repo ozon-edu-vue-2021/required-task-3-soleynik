@@ -27,6 +27,7 @@
                         v-if="legend.length > 0"
                         class="legend__items"
                     >
+                      <draggable>
                         <LegendItem
                             v-for="(item, index) in legend"
                             :key="index"
@@ -35,7 +36,9 @@
                             :counter="item.counter"
                             class="legend__item"
                         />
+                      </draggable>
                     </div>
+
                     <span
                         v-else
                         class="legend--empty"
@@ -69,6 +72,10 @@ import LegendItem from "./SideMenu/LegendItem.vue";
 import PersonCard from "./SideMenu/PersonCard.vue";
 import legend from "@/assets/data/legend.json";
 import { Doughnut } from "vue-chartjs";
+import draggable from "vuedraggable";
+import tables from "@/assets/data/tables.json";
+
+
 
 export default {
     props: {
@@ -85,14 +92,18 @@ export default {
         LegendItem,
         PersonCard,
         Doughnut,
+        draggable,
     },
     data() {
         return {
             legend: [],
+            tables: []
         };
     },
     created() {
         this.loadLegend();
+        this.loadTables();
+        this.changeCounterInLegend(this.countTables());
     },
     mounted() {
       this.makeChart();
@@ -100,6 +111,27 @@ export default {
     methods: {
           loadLegend() {
               this.legend = legend;
+          },
+          loadTables() {
+              this.tables = tables;
+          },
+          countTables(){
+            let count = {};
+            if(this.tables === undefined || this.tables.length === 0)
+              return {};
+            for(let i = 0; i < tables.length; i++){
+              count[tables[i].group_id] = count[tables[i].group_id] ? ++count[tables[i].group_id]:1;
+            }
+            return count;
+          },
+          changeCounterInLegend(countTables){
+            let indexCount = 0;
+            let countSize = Object.keys(countTables).length;
+            let indexLegend = 0;
+            let countLegend = Object.keys(this.legend).length;
+            while(indexLegend < countLegend && indexCount < countSize){
+              this.legend[indexLegend++].counter = countTables[indexCount++];
+            }
           },
           closeProfile() {
               this.$emit("update:isUserOpenned", false);

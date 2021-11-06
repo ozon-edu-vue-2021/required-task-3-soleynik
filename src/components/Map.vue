@@ -3,7 +3,6 @@
         <h3>Карта офиса</h3>
 
         <div
-            v-if="!isLoading"
             class="map-root"
         >
            <MapSVG ref="svg" />
@@ -13,7 +12,6 @@
             ref="table"
           />
         </div>
-        <div v-else>Loading...</div>
     </div>
 </template>
 
@@ -31,7 +29,6 @@ export default {
     },
     data() {
         return {
-            isLoading: false,
           svg: null,
           g: null,
           tables: [],
@@ -39,16 +36,16 @@ export default {
         };
     },
     mounted(){
-      this.svg = d3.select(this.$refs.svg);
-      this.g = this.svg.select("g");
-      this.tableSVG = d3.select(this.$refs.table);
-      this.tables = tables;
-      if(this.g){
-        this.drawTables();
-      }else{
-        console.log("ERROR");
-      }
-    },
+        this.svg = d3.select(this.$refs.svg);
+        this.g = this.svg.select("g");
+        this.tableSVG = d3.select(this.$refs.table);
+        this.tables = tables;
+        if(this.g){
+          this.drawTables();
+        }else{
+          console.log("ERROR");
+        }
+      },
     methods:{
       drawTables(){
         const svgTablesGroup = this.g.append("g").classed("groupPlaces",true);
