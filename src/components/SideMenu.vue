@@ -103,7 +103,6 @@ export default {
     created() {
         this.loadLegend();
         this.loadTables();
-        this.changeCounterInLegend(this.countTables());
     },
     mounted() {
       this.makeChart();
@@ -114,24 +113,6 @@ export default {
           },
           loadTables() {
               this.tables = tables;
-          },
-          countTables(){
-            let count = {};
-            if(this.tables === undefined || this.tables.length === 0)
-              return {};
-            for(let i = 0; i < tables.length; i++){
-              count[tables[i].group_id] = count[tables[i].group_id] ? ++count[tables[i].group_id]:1;
-            }
-            return count;
-          },
-          changeCounterInLegend(countTables){
-            let indexCount = 0;
-            let countSize = Object.keys(countTables).length;
-            let indexLegend = 0;
-            let countLegend = Object.keys(this.legend).length;
-            while(indexLegend < countLegend && indexCount < countSize){
-              this.legend[indexLegend++].counter = countTables[indexCount++];
-            }
           },
           closeProfile() {
               this.$emit("update:isUserOpenned", false);
